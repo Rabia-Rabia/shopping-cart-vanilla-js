@@ -27,4 +27,5 @@ document.querySelectorAll('.product-minus').forEach(el => {
         changeQuantity(this, 'decrement');
 
     });
-})
+});
+//updated
