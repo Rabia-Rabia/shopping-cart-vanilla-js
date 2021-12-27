@@ -28,3 +28,4 @@ document.querySelectorAll('.product-minus').forEach(el => {
 
     });
 })
+//changed
