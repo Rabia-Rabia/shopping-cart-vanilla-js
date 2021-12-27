@@ -28,4 +28,4 @@ document.querySelectorAll('.product-minus').forEach(el => {
 
     });
 });
-//test
+//updated
