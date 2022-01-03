@@ -15,17 +15,17 @@ const data = [
     }
 ]
 
-const createProduct = (productName, productImage, productPrice) => {
+const createProduct = (productId, productName, productImage, productPrice) => {
     const product = document.createElement('div');
     product.classList.add('cart-item');
     product.innerHTML = 
         `<div class="cart-item">
             <div class="row">
                 <div class="col-md-7 center-item mx-auto">
-                    <img src="${productImage}" alt="${productImage}">
+                    <img src="${productImage}" alt="${productName}">
                         <h5>${productName}</h5>
                 </div>
-                <div class="col-md-5 center-item product">
+                <div class="col-md-5 center-item product" id="product-${productId}">
                     <div class="input-group number-spinner">
                         <button class="btn btn-default product-minus"><i class="fas fa-minus"></i></button>
                         <input type="number" min="0" class="form-control text-center" value="1">
@@ -40,21 +40,22 @@ const createProduct = (productName, productImage, productPrice) => {
     document.getElementById('products').appendChild(product);
   
 }
-const changeQuantity = (self, action, price) => {
-    const productQuantityElement = self.closest('.product').querySelector('input[type = "number"]');
-    const productQuantity = parseInt(productQuantityElement.value);
-    const productPriceElement = self.closest('.product').querySelector('h5 span');
-    const productPrice = parseInt(productPriceElement.innerText);
+const changeQuantity = (self, action, price, id) => {
+    //debugger;
+    const productQuantityElement = self.closest(`#product-${id}`).querySelector('input[type = "number"]');
+    let productQuantity = parseInt(productQuantityElement.value);
+    const productPriceElement = self.closest(`#product-${id}`).querySelector('h5 span');
+    // const productPrice = parseInt(productPriceElement.innerText);
 
 
     switch (action) {
         case 'increment':
             productQuantityElement.value = productQuantity + 1;
-            productQuantity = productQuantityElement.value;
+            productQuantity = parseInt(productQuantityElement.value);
             break;
         case 'decrement':
             productQuantityElement.value = productQuantity > 1 ? productQuantity - 1 : 1;
-            productQuantity = productQuantityElement.value;
+            productQuantity = parseInt(productQuantityElement.value);
             break;
 
     }
@@ -62,21 +63,25 @@ const changeQuantity = (self, action, price) => {
     productPriceElement.innerText = price * productQuantity;
 }
 
-document.querySelectorAll('.product-plus').forEach(el => {
-    el.addEventListener('click', function () {
-        // document.querySelector('input[type = "number"]').value = 5;
-        changeQuantity(this, 'increment', 5);
-
-    });
-})
-
-document.querySelectorAll('.product-minus').forEach(el => {
-    el.addEventListener('click', function () {
-        changeQuantity(this, 'decrement', 5);
-
-    });
-})
 
 window.onload = () => {
-    createProduct('something title', 'img/product-1.png', 456);
+    data.map (product => {
+        createProduct(product.id, product.title, product.image, product.price ); 
+        document.querySelectorAll('.product-plus').forEach(el => {
+            el.addEventListener('click', function () {
+                // document.querySelector('input[type = "number"]').value = 5;
+                changeQuantity(this, 'increment', product.price, product.id);
+        
+            });
+        })
+        
+        document.querySelectorAll('.product-minus').forEach(el => {
+            el.addEventListener('click', function () {
+                changeQuantity(this, 'decrement', product.price, product.id);
+        
+            });
+        })
+ 
+    });
+
 }
