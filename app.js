@@ -31,7 +31,7 @@ const createProduct = (productId, productName, productImage, productPrice) => {
                         <input type="number" min="0" class="form-control text-center" value="1">
                             <button class="btn btn-default product-plus"><i class="fas fa-plus"></i></button>
                     </div>
-                    <h5>$ <span>${productPrice}</span></h5>
+                    <h5>$ <span class= "product-price">${productPrice}</span></h5>
                     <img src="img/remove.png" class="remove-item" alt="">
                 </div>
             </div>
@@ -40,29 +40,50 @@ const createProduct = (productId, productName, productImage, productPrice) => {
     document.getElementById('products').appendChild(product);
   
 }
-const changeQuantity = (self, action, price, id) => {
-    //debugger;
-    const productQuantityElement = self.closest(`#product-${id}`).querySelector('input[type = "number"]');
-    let productQuantity = parseInt(productQuantityElement.value);
-    const productPriceElement = self.closest(`#product-${id}`).querySelector('h5 span');
-    // const productPrice = parseInt(productPriceElement.innerText);
 
+const totalPrice = () => {
+    let productPrice = [];
+    document.querySelectorAll('.product-price').forEach(product => {
+        productPrice.push(parseInt(product.innerText));
+    });
 
-    switch (action) {
-        case 'increment':
-            productQuantityElement.value = productQuantity + 1;
-            productQuantity = parseInt(productQuantityElement.value);
-            break;
-        case 'decrement':
-            productQuantityElement.value = productQuantity > 1 ? productQuantity - 1 : 1;
-            productQuantity = parseInt(productQuantityElement.value);
-            break;
+    const totalPrice = productPrice.reduce((prev, next) => {
+        return prev + next;
+    });
 
-    }
+    document.getElementById('sub-total').innerText = totalPrice;
 
-    productPriceElement.innerText = price * productQuantity;
 }
 
+    const changeQuantityAndPrice = (self, action, price, id) => {
+        try {
+            const productQuantityElement = self.closest(`#product-${id}`).querySelector('input[type = "number"]');
+            let productQuantity = parseInt(productQuantityElement.value);
+            const productPriceElement = self.closest(`#product-${id}`).querySelector('h5 span');
+            // const productPrice = parseInt(productPriceElement.innerText);
+        
+        
+            switch (action) {
+                case 'increment':
+                    productQuantityElement.value = productQuantity + 1;
+                    productQuantity = parseInt(productQuantityElement.value);
+                    break;
+                case 'decrement':
+                    productQuantityElement.value = productQuantity > 1 ? productQuantity - 1 : 1;
+                    productQuantity = parseInt(productQuantityElement.value);
+                    break;
+        
+            }
+        
+            productPriceElement.innerText = price * productQuantity;
+            totalPrice();
+        }
+        
+        catch (err) {
+
+        }
+
+}
 
 window.onload = () => {
     data.map (product => {
@@ -70,14 +91,14 @@ window.onload = () => {
         document.querySelectorAll('.product-plus').forEach(el => {
             el.addEventListener('click', function () {
                 // document.querySelector('input[type = "number"]').value = 5;
-                changeQuantity(this, 'increment', product.price, product.id);
+                changeQuantityAndPrice(this, 'increment', product.price, product.id);
         
             });
         })
         
         document.querySelectorAll('.product-minus').forEach(el => {
             el.addEventListener('click', function () {
-                changeQuantity(this, 'decrement', product.price, product.id);
+                changeQuantityAndPrice(this, 'decrement', product.price, product.id);
         
             });
         })
